@@ -537,22 +537,73 @@ async function getGraphToken(){
 async function loadData(){
   try{
     const token=await getGraphToken();
-    const response=await fetch(GRAPH_CONTENT_URL,{headers:{Authorization:'Bearer '+token},cache:'no-store'});
+
+    // Primeiro: obtém o DriveItem e a URL de download pré-autenticada
+    const itemResponse=await fetch(
+      'https://graph.microsoft.com/v1.0/shares/'+SHARE_ID+'/driveItem?$select=id,@microsoft.graph.downloadUrl',
+      {
+        headers:{
+          Authorization:'Bearer '+token
+        },
+        cache:'no-store'
+      }
+    );
+
+    if(!itemResponse.ok){
+      const text=await itemResponse.text().catch(()=> '');
+      throw new Error(
+        'Microsoft Graph HTTP '+itemResponse.status+' — '+text.slice(0,180)
+      );
+    }
+
+    const item=await itemResponse.json();
+    const downloadUrl=item['@microsoft.graph.downloadUrl'];
+
+    if(!downloadUrl){
+      throw new Error('Graph não retornou a URL de download do arquivo.');
+    }
+
+    // Segundo: baixa o JSON usando a URL pré-autenticada
+    const response=await fetch(downloadUrl,{cache:'no-store'});
+
     if(!response.ok){
       const text=await response.text().catch(()=> '');
-      throw new Error('Microsoft Graph HTTP '+response.status+(text?' — '+text.slice(0,180):''));
+      throw new Error(
+        'Download do JSON HTTP '+response.status+' — '+text.slice(0,180)
+      );
     }
+
     const payload=await response.json();
-    const next=Array.isArray(payload)?payload:(Array.isArray(payload?.dados)?payload.dados:[]);
+
+    const next=Array.isArray(payload)
+      ? payload
+      : (Array.isArray(payload.dados) ? payload.dados : []);
+
     DATA=next;
-    rebuildFilters();
+
+    renderFilters();
     render();
-    $('updatedAt').textContent=new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
-    $('authUser').textContent=(msalInstance.getActiveAccount()?.username||'');
+    renderTable(filtered());
+
+    $('#updatedAt').textContent=
+      new Date().toLocaleString('pt-BR',{
+        dateStyle:'short',
+        timeStyle:'short'
+      });
+
+    $('#authUser').textContent=
+      msalInstance.getActiveAccount()?.username || '';
+
   }catch(err){
-    $('updatedAt').textContent='Erro ao carregar';
+    $('#updatedAt').textContent='Erro ao carregar';
+
     console.error('Falha ao carregar dados-dashboard.json via Graph',err);
-    setAuthStatus('Falha ao carregar os dados. '+(err?.message||''),true);
+
+    setAuthStatus(
+      'Falha ao carregar os dados. '+(err?.message || ''),
+      true
+    );
+
     showGate();
   }
 }

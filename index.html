@@ -593,17 +593,17 @@ try{
   throw new Error('ERRO em render: '+e.message);
 }
 
-    $('#updatedAt').textContent=
+    $('updatedAt').textContent=
       new Date().toLocaleString('pt-BR',{
         dateStyle:'short',
         timeStyle:'short'
       });
 
-    $('#authUser').textContent=
+    $('authUser').textContent=
       msalInstance.getActiveAccount()?.username || '';
 
   }catch(err){
-    $('#updatedAt').textContent='Erro ao carregar';
+    $('updatedAt').textContent='Erro ao carregar';
 
     console.error('Falha ao carregar dados-dashboard.json via Graph',err);
 

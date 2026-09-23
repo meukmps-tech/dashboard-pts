@@ -208,7 +208,7 @@ th:nth-child(9),td:nth-child(9){width:105px}
 </section>
 </div>
 
-<script type="text/javascript" src="https://alcdn.msauth.net/browser/2.35.0/js/msal-browser.min.js" integrity="sha384-PARf28kmic36Ve+O3DnUerRXFtOQ7ZDqRDGpLcbljly5/N39T2OV3kt3QsWOKeAX" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://alcdn.msauth.net/browser/2.35.0/js/msal-browser.min.js" crossorigin="anonymous"></script>
 <script>
 let DATA=[];
 
@@ -451,6 +451,12 @@ const TENANT_ID='b0585541-e004-40b3-83d7-77be0b917f38';
 const CLIENT_ID='cf0e16d4-70cb-42f4-b9d1-24cf2e0fcf28';
 const SCOPES=['Files.Read'];
 const SHARING_URL='https://epepantanal.sharepoint.com/:u:/s/ambararaucaria/IQBli3HDolmNSpiVkw3a2-pJAbo3R4a34YcvP-MM8iJ2X_k?e=88eS5m';
+
+if(typeof msal==='undefined') {
+  $('updatedAt').textContent='Erro: biblioteca Microsoft não carregada';
+  setAuthStatus('A biblioteca de autenticação da Microsoft não carregou. Atualize a página e tente novamente.',true);
+  throw new Error('MSAL Browser não carregada.');
+}
 
 const msalConfig={
   auth:{

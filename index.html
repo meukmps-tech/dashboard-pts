@@ -579,10 +579,19 @@ async function loadData(){
       ? payload
       : (Array.isArray(payload.dados) ? payload.dados : []);
 
-    DATA=next;
+DATA=next;
 
-    rebuildFilters();
-render();
+try{
+  rebuildFilters();
+}catch(e){
+  throw new Error('ERRO em rebuildFilters: '+e.message);
+}
+
+try{
+  render();
+}catch(e){
+  throw new Error('ERRO em render: '+e.message);
+}
 
     $('#updatedAt').textContent=
       new Date().toLocaleString('pt-BR',{

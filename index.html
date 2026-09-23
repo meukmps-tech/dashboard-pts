@@ -500,7 +500,10 @@ async function signIn(){
   try{
     $('loginBtn').disabled=true;
     setAuthStatus('Abrindo login da Microsoft…');
-    const result=await msalInstance.loginPopup({scopes:['User.Read','Files.Read']});
+    const result=await msalInstance.loginPopup({
+  scopes:['User.Read','Files.Read'],
+  prompt:'consent'
+});
     if(result?.account) msalInstance.setActiveAccount(result.account);
     const account=result?.account || msalInstance.getActiveAccount() || (await getAccount());
     if(!account) throw new Error('Não foi possível identificar a conta após o login.');

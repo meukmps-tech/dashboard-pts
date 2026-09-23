@@ -1,0 +1,38 @@
+name: Baixar MSAL
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  baixar-msal:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Baixar MSAL Browser
+        run: |
+          mkdir -p msal-temp
+          cd msal-temp
+          npm pack @azure/msal-browser@2.35.0
+          tar -xzf azure-msal-browser-2.35.0.tgz
+          cp package/lib/msal-browser.min.js ../msal-browser.min.js
+          cd ..
+          rm -rf msal-temp
+
+      - name: Salvar MSAL no repositório
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add msal-browser.min.js
+          git commit -m "Adicionar MSAL Browser local" || echo "Nenhuma alteração para salvar"
+          git push

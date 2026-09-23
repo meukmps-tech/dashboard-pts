@@ -581,9 +581,8 @@ async function loadData(){
 
     DATA=next;
 
-    renderFilters();
-    render();
-    renderTable(filtered());
+    rebuildFilters();
+render();
 
     $('#updatedAt').textContent=
       new Date().toLocaleString('pt-BR',{

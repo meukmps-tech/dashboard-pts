@@ -449,8 +449,8 @@ function formatDate(v){
 // depois que o usuário autentica com a conta corporativa autorizada.
 const TENANT_ID='b0585541-e004-40b3-83d7-77be0b917f38';
 const CLIENT_ID='cf0e16d4-70cb-42f4-b9d1-24cf2e0fcf28';
-const SCOPES=['Files.Read.All'];
-const SHARING_URL='https://epepantanal.sharepoint.com/:u:/s/ambararaucaria/IQBli3HDolmNSpiVkw3a2-pJAbo3R4a34YcvP-MM8iJ2X_k?e=88eS5m';
+const SCOPES=['Files.Read'];
+const SHARING_URL='https://epepantanal.sharepoint.com/:u:/s/ambararaucaria/IQBli3HDolmNSpiVkw3a2-pJAbo3R4a34YcvP-MM8iJ2X_k?e=OuqD49';
 
 if(typeof msal==='undefined') {
   $('updatedAt').textContent='Erro: biblioteca Microsoft não carregada';
@@ -501,7 +501,7 @@ async function signIn(){
     $('loginBtn').disabled=true;
     setAuthStatus('Abrindo login da Microsoft…');
     const result=await msalInstance.loginPopup({
-  scopes:['User.Read','Files.Read.All'],
+  scopes:['User.Read','Files.Read'],
   prompt:'consent'
 });
     if(result?.account) msalInstance.setActiveAccount(result.account);
